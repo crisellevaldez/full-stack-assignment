@@ -1,8 +1,10 @@
 const router = require('express').Router()
 const {
-    createLog
+    createLog,
+    getLogs
 } = require('../controllers/logController')
+const { auth } = require('../middleware/authMiddleware')
 
-router.post('/', createLog)
+router.route('/').post(auth, createLog).get(auth, getLogs)
 
 module.exports = router
