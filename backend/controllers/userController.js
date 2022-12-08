@@ -1,20 +1,29 @@
 const User = require('../models/userModel')
+const validator = require('validator')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 
 // @desc    User registration
 // @route   api/users
 const createUser = async (req, res) => {
-    const { firstName, middleName, lastName, email, password } = req.body
+    const { firstName, middleName, lastName, gender, birthDay, email, password } = req.body
 
-    if (!firstName || !lastName || !email || !password){
-        return res.status(400).json({message: 'Please fill up the required fields.'})
+    if (!firstName || !lastName || !gender || !birthDay || !email || !password){
+        return res.status(400).json({error: 'Please fill up the required fields.'})
+    }
+
+    if (!validator.isEmail(email)){
+        return res.status(400).json({error: 'Please enter a valid email address.'})
+    }
+
+    if (!validator.isStrongPassword(password)){
+        return res.status(400).json({error: 'Password must be at least 8 characters long, with at least one number, symbol, lowercase letter, and uppercase letter.'})
     }
 
     //Check if email already exist
     const userExist = await User.findOne({email})
     if (userExist){
-        return res.status(400).json({message: 'User already exist.'})
+        return res.status(400).json({error: 'User already exist.'})
     }
 
     //Hash password
@@ -23,12 +32,9 @@ const createUser = async (req, res) => {
 
     //Create user (Insert)
     try {
-        const user = await User.create({ firstName: firstName, middleName: middleName, lastName: lastName, email: email, password: hashedPassword})
+        const user = await User.create({ firstName: firstName, middleName: middleName, 
+            lastName: lastName, gender: gender, birthDay: birthDay, email: email, password: hashedPassword})
         res.status(200).json({
-            _id: user.id,
-            firstName: user.firstName, 
-            middleName: user.middleName, 
-            lastName: user.lastName, 
             email: user.email,
             token: generateToken(user._id)
         })
@@ -44,7 +50,7 @@ const loginUser = async (req, res) => {
 
     //Validations
     if (!email || !password ){
-        return res.status(400).json({message: 'Please enter email/password.'})
+        return res.status(400).json({error: 'Please enter email/password.'})
     }
 
     //Check if email exist
@@ -53,10 +59,6 @@ const loginUser = async (req, res) => {
     //Compare the hashed password
     if (user && (await bcrypt.compare(password, user.password))){
         res.status(200).json({
-            _id: user.id,
-            firstName: user.firstName, 
-            middleName: user.middleName, 
-            lastName: user.lastName, 
             email: user.email,
             token: generateToken(user._id)
         })

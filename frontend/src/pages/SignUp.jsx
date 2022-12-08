@@ -3,6 +3,7 @@ import { Container, Row, Col, Form, Button } from 'react-bootstrap'
 import Navbar from '../components/navbar/Navbar'
 
 const SignUp = () => {
+    const [error, setError] = useState(null)
     const [formData, setFormData] = useState({
         firstName: '',
         middleName: '',
@@ -21,6 +22,28 @@ const SignUp = () => {
         }))
     }
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const response = await fetch('/api/users', {
+            method: 'POST',
+            body: JSON.stringify(formData),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+
+        const json = await response.json()
+
+        if (!response.ok) {
+            setError(json.error)
+        }
+
+        else {
+            setError(null)
+        }
+    }
+
     return (
         <>
             <Navbar />
@@ -28,7 +51,7 @@ const SignUp = () => {
                 <Row className="d-flex justify-content-center">
                     <Col lg={8}>
                         <h4 className="text-center mb-5"> SIGN UP </h4>
-                        <Form>
+                        <Form onSubmit={handleSubmit}>
                             <Form.Group as={Row} className="mb-3">
                                 <Col md="6" lg="4" className="mb-3">
                                     <label> First name </label>
@@ -56,7 +79,7 @@ const SignUp = () => {
                                 </Col>
                                 <Col md="6" className="mb-3">
                                     <label> Email </label>
-                                    <Form.Control type="email" className="mt-1 border border-secondary" id="email" name="email" value={email} onChange={onChange} />
+                                    <Form.Control type="text" className="mt-1 border border-secondary" id="email" name="email" value={email} onChange={onChange} />
                                 </Col>
                                 <Col md="6" className="mb-3">
                                     <label> Password </label>
@@ -64,9 +87,18 @@ const SignUp = () => {
                                 </Col>
                             </Form.Group>
 
-                            <Button variant="primary" type="submit" className="float-end">
-                                Sign Up
-                            </Button>
+                            <div className="d-flex justify-content-end">
+                                <Button variant="primary" type="submit">
+                                    Sign Up
+                                </Button>
+                            </div>
+
+                            {error && 
+                                <div className="alert alert-danger mt-3" role="alert">
+                                    {error}
+                                </div>
+                            }
+
                         </Form>
                     </Col>
                 </Row>
