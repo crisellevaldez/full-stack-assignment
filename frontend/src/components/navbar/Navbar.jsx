@@ -1,7 +1,16 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useLogout } from '../../hooks/useLogout'
+import { useAuthContext } from '../../hooks/useAuthContext'
 
 const Navbar = () => {
+    const { logout } = useLogout()
+    const { user } = useAuthContext()
+
+    const onLogout = () => {
+        logout()
+    }
+
     return (
         <>
             <nav className="shadow-sm border-bottom border-secondary navbar navbar-expand-lg bg-light justify-content-end">
@@ -17,11 +26,15 @@ const Navbar = () => {
                             </li>
 
                             <li className="nav-item dropdown">
-                                <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Name
-                                </a>
+                                { user && 
+                                    <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        { user.email }
+                                    </a>
+                                }
+                                
                                 <ul className="dropdown-menu">
-                                    <li><Link className="dropdown-item" to="/login"> Sign Up </Link></li>
+                                    <li> <Link className="dropdown-item" to="/login"> Sign Up </Link> </li>
+                                    <li> <button onClick={onLogout} className="btn btn-primary" type="submit"> Sign Out </button> </li>
                                 </ul>
                             </li>
                         </ul>

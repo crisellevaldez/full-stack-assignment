@@ -1,14 +1,16 @@
 import { React, useState } from 'react'
 import { Container, Row, Col, Form, Button } from 'react-bootstrap'
 import Navbar from '../components/navbar/Navbar'
+import { useSignUp } from '../hooks/useSignUp'
 
 const SignUp = () => {
-    const [error, setError] = useState(null)
+    
+    const { signup, isLoading, error } = useSignUp()
     const [formData, setFormData] = useState({
         firstName: '',
         middleName: '',
         lastName: '',
-        gender: '',
+        gender: 'Male',
         birthDay: '',
         email: '',
         password: ''
@@ -25,23 +27,8 @@ const SignUp = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const response = await fetch('/api/users', {
-            method: 'POST',
-            body: JSON.stringify(formData),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-
-        const json = await response.json()
-
-        if (!response.ok) {
-            setError(json.error)
-        }
-
-        else {
-            setError(null)
-        }
+        await signup(formData)
+        
     }
 
     return (
@@ -52,6 +39,12 @@ const SignUp = () => {
                     <Col lg={8}>
                         <h4 className="text-center mb-5"> SIGN UP </h4>
                         <Form onSubmit={handleSubmit}>
+                            {error && 
+                                <div className="alert alert-danger mt-3" role="alert">
+                                    {error}
+                                </div>
+                            }
+
                             <Form.Group as={Row} className="mb-3">
                                 <Col md="6" lg="4" className="mb-3">
                                     <label> First name </label>
@@ -88,17 +81,11 @@ const SignUp = () => {
                             </Form.Group>
 
                             <div className="d-flex justify-content-end">
-                                <Button variant="primary" type="submit">
+                                <Button disabled={isLoading} variant="primary" type="submit">
                                     Sign Up
                                 </Button>
                             </div>
-
-                            {error && 
-                                <div className="alert alert-danger mt-3" role="alert">
-                                    {error}
-                                </div>
-                            }
-
+                            
                         </Form>
                     </Col>
                 </Row>

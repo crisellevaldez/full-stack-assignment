@@ -1,9 +1,11 @@
 import { React, useState } from 'react'
 import { Container, Row, Col, Form, Button } from 'react-bootstrap'
 import Navbar from '../components/navbar/Navbar'
+import { useLogin } from '../hooks/useLogin'
 
 const Login = () => {
-    const [error, setError] = useState(null)
+
+    const { login, isLoading, error } = useLogin()
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -20,23 +22,7 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        const response = await fetch('/api/users/login', {
-            method: 'POST',
-            body: JSON.stringify(formData),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-
-        const json = await response.json()
-
-        if (!response.ok) {
-            setError(json.error)
-        }
-
-        else {
-            setError(null)
-        }
+        await login(formData)
     }
 
     return (
@@ -47,6 +33,13 @@ const Login = () => {
                     <Col md={6} lg={4}>
                         <h4 className="text-center mb-5"> SIGN IN </h4>
                         <Form onSubmit={handleSubmit}>
+                            
+                            {error && 
+                                <div className="alert alert-danger mt-3" role="alert">
+                                    {error}
+                                </div>
+                            }
+                            
                             <Form.Group as={Row} className="mb-3">
                                 <Col lg="12" className="mb-3">
                                     <label> Email </label>
@@ -59,16 +52,10 @@ const Login = () => {
                             </Form.Group>
 
                             <div className="d-flex justify-content-end">
-                                <Button variant="primary" type="submit">
+                                <Button disabled={isLoading} variant="primary" type="submit">
                                     Sign In
                                 </Button>
                             </div>
-
-                            {error && 
-                                <div className="alert alert-danger mt-3" role="alert">
-                                    {error}
-                                </div>
-                            }
                         </Form>
                     </Col>
                 </Row>
