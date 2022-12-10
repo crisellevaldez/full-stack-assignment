@@ -34,7 +34,7 @@ const createUser = async (req, res) => {
     try {
         const user = await User.create({ firstName: firstName, middleName: middleName, 
             lastName: lastName, gender: gender, birthDay: birthDay, email: email, password: hashedPassword})
-        res.status(200).json({
+        res.status(201).json({
             email: user.email,
             firstName: user.firstName,
             middleName: user.middleName, 
