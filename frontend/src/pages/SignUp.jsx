@@ -81,7 +81,7 @@ const SignUp = () => {
                             </Form.Group>
 
                             <div className="d-flex justify-content-end">
-                                <Button disabled={isLoading} variant="primary" type="submit">
+                                <Button className="rounded-1" disabled={isLoading} variant="primary" type="submit">
                                     Sign Up
                                 </Button>
                             </div>

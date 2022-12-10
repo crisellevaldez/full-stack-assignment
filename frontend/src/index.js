@@ -18,4 +18,4 @@ root.render(
       <App />
     </AuthContextProvider>
   </React.StrictMode>
-);
+)

@@ -1,7 +1,8 @@
 import { React, useState } from 'react'
 import { Container, Row, Col, Form, Button } from 'react-bootstrap'
-import Navbar from '../components/navbar/Navbar'
 import { useLogin } from '../hooks/useLogin'
+import Navbar from '../components/navbar/Navbar'
+import { Link } from 'react-router-dom'
 
 const Login = () => {
 
@@ -49,10 +50,13 @@ const Login = () => {
                                     <label> Password </label>
                                     <Form.Control type="password" className="mt-1 border border-secondary" id="password" name="password" value={password} onChange={onChange} />
                                 </Col>
+
+                                <span> Not a member yet? <Link to="/sign-up"> Sign up for free </Link> </span>
                             </Form.Group>
 
+
                             <div className="d-flex justify-content-end">
-                                <Button disabled={isLoading} variant="primary" type="submit">
+                                <Button className="rounded-1" disabled={isLoading} variant="primary" type="submit">
                                     Sign In
                                 </Button>
                             </div>

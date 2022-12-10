@@ -3,6 +3,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const logRoutes = require('./routes/logs')
 const userRoutes = require('./routes/users')
+const openAIRoutes = require('./routes/open-ai')
 const PORT = process.env.PORT || 8000;
 
 //express app
@@ -17,6 +18,7 @@ app.use(express.json());
 //routes
 app.use('/api/logs', logRoutes)
 app.use('/api/users', userRoutes)
+app.use('/api/open-AI', openAIRoutes)
 
 //database connection
 mongoose.connect(process.env.MONGO_URI)

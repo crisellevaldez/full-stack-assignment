@@ -36,6 +36,9 @@ const createUser = async (req, res) => {
             lastName: lastName, gender: gender, birthDay: birthDay, email: email, password: hashedPassword})
         res.status(200).json({
             email: user.email,
+            firstName: user.firstName,
+            middleName: user.middleName, 
+            lastName: user.lastName,
             token: generateToken(user._id)
         })
     } catch(err) {
@@ -60,6 +63,9 @@ const loginUser = async (req, res) => {
     if (user && (await bcrypt.compare(password, user.password))){
         res.status(200).json({
             email: user.email,
+            firstName: user.firstName,
+            middleName: user.middleName, 
+            lastName: user.lastName,
             token: generateToken(user._id)
         })
     }
